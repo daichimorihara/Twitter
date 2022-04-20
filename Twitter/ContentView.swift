@@ -8,24 +8,61 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var number = 1
+    @State private var showMenu = false
+    
     var body: some View {
-        VStack {
-            Text("AAA")
-                .font(.system(size: 30))
-                .frame(width: 90, height: 90)
-                .background(.red)
-                .offset(x: 100, y: 100)
-                .background(.blue)
-                .onTapGesture {
-                    self.number += 1
+        NavigationView {
+            ZStack(alignment: .topLeading) {
+
+                MainTabView()
+                    .navigationBarHidden(showMenu)
+//                    .offset(x: showMenu ? 250 : 0, y: 0)
+//                    .onTapGesture {
+//                        withAnimation {
+//                            showMenu = false
+//
+//                        }
+//                    }
+                    
+                
+                if showMenu {
+                    ZStack {
+                        Color(.black)
+                            .opacity(0.5)
+                    }
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        withAnimation {
+                            showMenu = false
+                        }
+                    }
                 }
-            
-            
-            Text(String(number))
+                
+                SideMenuView()
+                    .frame(width: 250)
+                    .offset(x: showMenu ? 0 : -250, y: 0)
+                    .background(showMenu ?  Color.white : Color.clear)
+                    
+            }
+            .navigationTitle("Home")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        withAnimation {
+                            self.showMenu.toggle()
+                        }
+                    } label: {
+                        Circle()
+                            .frame(width: 32, height: 32)
+                    }
+
+                }
+            }
+            .onAppear{
+                showMenu = false
+            }
         }
-        
-        
     }
 }
 

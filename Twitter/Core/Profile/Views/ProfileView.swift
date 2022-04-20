@@ -8,72 +8,22 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @State private var selectedFilter: TweetFilterViewModel = .tweets
+    @Namespace var animation
+    @Environment(\.dismiss) var dismiss
+    
     var body: some View {
         VStack(alignment: .leading) {
             headerView
             
             actionButtons
             
-            VStack(alignment: .leading) {
-                HStack {
-                    Text("Jack Dorsey")
-                        .font(.title2)
-                        .bold()
-                    
-                    Image(systemName: "checkmark.seal.fill")
-                        .foregroundColor(Color(.systemBlue))
-                }
-                
-                Text("@jack")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-                
-                Text("Your moms favorite villain")
-                    .font(.subheadline
-                    )
-                    .padding(.vertical, 5)
-                
-                HStack(spacing: 24) {
-                    HStack {
-                        Image(systemName: "mappin.and.ellipse")
-                        
-                        Text("Los Angels, CA")
-                    }
-                    
-                    HStack {
-                        Image(systemName: "link")
-                        
-                        Text("www.jackdorsey.com")
-                    }
-                }
-                .font(.caption)
-                .foregroundColor(.gray)
-                
-                HStack(spacing: 24) {
-                    HStack(spacing: 4) {
-                        Text("122")
-                            .font(.subheadline)
-                            .bold()
-                        
-                        Text("Following")
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                    }
-                    
-                    HStack(spacing: 4) {
-                        Text("5.4M")
-                            .font(.subheadline)
-                            .bold()
-                        
-                        Text("Followes")
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                    }
-                }
-                .padding(.vertical, 5)
-                
-            }
-            .padding(.horizontal)
+            userInfoDetails
+            
+            tweetFilterBar
+            
+            tweetsView
+            
             
             Spacer()
         }
@@ -88,15 +38,14 @@ extension ProfileView {
             
             VStack {
                 Button {
-                    
+                    dismiss()
                 } label: {
                     Image(systemName: "arrow.left")
                         .resizable()
                         .frame(width: 20, height: 16)
                         .foregroundColor(.white)
-                        .offset(x: 16, y: 12)
-                        
                 }
+                .offset(x: 16, y: 12)
                 
                 Circle()
                     .frame(width: 72, height: 72)
@@ -129,6 +78,93 @@ extension ProfileView {
 
         }
         .padding(.trailing)
+    }
+    
+    var userInfoDetails: some View {
+        VStack(alignment: .leading) {
+            HStack {
+                Text("Jack Dorsey")
+                    .font(.title2)
+                    .bold()
+                
+                Image(systemName: "checkmark.seal.fill")
+                    .foregroundColor(Color(.systemBlue))
+            }
+            
+            Text("@jack")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            Text("Your moms favorite villain")
+                .font(.subheadline
+                )
+                .padding(.vertical, 5)
+            
+            HStack(spacing: 24) {
+                HStack {
+                    Image(systemName: "mappin.and.ellipse")
+                    
+                    Text("Los Angels, CA")
+                }
+                
+                HStack {
+                    Image(systemName: "link")
+                    
+                    Text("www.jackdorsey.com")
+                }
+            }
+            .font(.caption)
+            .foregroundColor(.gray)
+            
+            UserStatsView()
+                .padding(.vertical, 5)
+            
+        }
+        .padding(.horizontal)
+    }
+    
+    
+    var tweetFilterBar: some View {
+        HStack {
+            ForEach(TweetFilterViewModel.allCases, id: \.rawValue) { item in
+                VStack {
+                    Text(item.title)
+                        .font(.subheadline)
+                        .fontWeight(selectedFilter == item ? .semibold : .regular)
+                        .foregroundColor(selectedFilter == item ? .black : .gray)
+                    
+                    if selectedFilter == item {
+                        Capsule()
+                            .foregroundColor(Color(.systemBlue))
+                            .frame(height: 3)
+                            .matchedGeometryEffect(id: "filter", in: animation)
+                    } else {
+                        Capsule()
+                            .foregroundColor(Color(.clear))
+                            .frame(height: 3)
+                    }
+
+                }
+                .onTapGesture {
+                    withAnimation {
+                        self.selectedFilter = item
+                    }
+                }
+            }
+        }
+        .overlay(Divider().offset(x: 0, y: 16))
+    }
+    
+    var tweetsView: some View {
+        ScrollView {
+            LazyVStack {
+                ForEach(0...9, id: \.self) { _ in
+                    TweetRowView()
+                        .padding(.horizontal)
+                }
+            }
+        }
+
     }
 }
 
