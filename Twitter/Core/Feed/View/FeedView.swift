@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct FeedView: View {
+    @State private var showNewTweetView = false
+    
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             ScrollView {
@@ -18,7 +20,7 @@ struct FeedView: View {
             }
             
             Button {
-                print("new tweet view")
+                self.showNewTweetView.toggle()
             } label: {
                 Image(systemName: "pencil.and.outline")
                     .font(.system(size: 32))
@@ -28,7 +30,9 @@ struct FeedView: View {
                     .clipShape(Circle())
                     .padding()
             }
-
+        }
+        .fullScreenCover(isPresented: $showNewTweetView) {
+            NewTweetView()
         }
     }
 }

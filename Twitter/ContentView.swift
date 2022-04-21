@@ -9,59 +9,66 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var showMenu = false
+    @EnvironmentObject var vm: AuthViewModel
     
     var body: some View {
         NavigationView {
-            ZStack(alignment: .topLeading) {
-
-                MainTabView()
-                    .navigationBarHidden(showMenu)
-//                    .offset(x: showMenu ? 250 : 0, y: 0)
-//                    .onTapGesture {
-//                        withAnimation {
-//                            showMenu = false
-//
-//                        }
-//                    }
-                    
-                
-                if showMenu {
-                    ZStack {
-                        Color(.black)
-                            .opacity(0.5)
-                    }
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        withAnimation {
-                            showMenu = false
-                        }
-                    }
+            Group {
+                if vm.userSession == nil {
+                    LoginView()
+                } else {
+                    mainInterfaceView
                 }
                 
-                SideMenuView()
-                    .frame(width: 250)
-                    .offset(x: showMenu ? 0 : -250, y: 0)
-                    .background(showMenu ?  Color.white : Color.clear)
-                    
+                
             }
-            .navigationTitle("Home")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        withAnimation {
-                            self.showMenu.toggle()
-                        }
-                    } label: {
-                        Circle()
-                            .frame(width: 32, height: 32)
-                    }
+        }
+    }
+}
 
+extension ContentView {
+    
+    var mainInterfaceView: some View {
+        ZStack(alignment: .topLeading) {
+
+            MainTabView()
+                .navigationBarHidden(showMenu)
+            
+            if showMenu {
+                ZStack {
+                    Color(.black)
+                        .opacity(0.5)
+                }
+                .ignoresSafeArea()
+                .onTapGesture {
+                    withAnimation {
+                        showMenu = false
+                    }
                 }
             }
-            .onAppear{
-                showMenu = false
+            
+            SideMenuView()
+                .frame(width: 250)
+                .offset(x: showMenu ? 0 : -250, y: 0)
+                .background(showMenu ?  Color.white : Color.clear)
+                
+        }
+        .navigationTitle("Home")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    withAnimation {
+                        self.showMenu.toggle()
+                    }
+                } label: {
+                    Circle()
+                        .frame(width: 32, height: 32)
+                }
             }
+        }
+        .onAppear{
+            showMenu = false
         }
     }
 }
