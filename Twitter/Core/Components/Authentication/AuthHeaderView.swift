@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AuthenticatoinHeaderView: View {
+struct AuthHeaderView: View {
     let title1: String
     let title2: String
     
@@ -32,6 +32,6 @@ struct AuthenticatoinHeaderView: View {
 
 struct AuthenticatoinHeaderView_Previews: PreviewProvider {
     static var previews: some View {
-        AuthenticatoinHeaderView(title1: "Hello.", title2: "Welcom Back")
+        AuthHeaderView(title1: "Hello.", title2: "Welcom Back")
     }
 }

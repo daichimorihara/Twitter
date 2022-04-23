@@ -22,13 +22,16 @@ struct FeedView: View {
             Button {
                 self.showNewTweetView.toggle()
             } label: {
-                Image(systemName: "pencil.and.outline")
-                    .font(.system(size: 32))
+                Image("tweet")
+                    .resizable()
+                    .renderingMode(.template)
+                    .frame(width: 28, height: 28)
                     .padding()
-                    .background(Color(.systemBlue))
                     .foregroundColor(.white)
+                    .background(Color(.systemBlue))
                     .clipShape(Circle())
                     .padding()
+
             }
         }
         .fullScreenCover(isPresented: $showNewTweetView) {
