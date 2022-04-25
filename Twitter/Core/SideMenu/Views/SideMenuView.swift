@@ -6,53 +6,62 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct SideMenuView: View {
+    @EnvironmentObject var authViewModel: AuthViewModel
     
     var body: some View {
-        VStack {
-            VStack(alignment: .leading, spacing: 32) {
-                VStack(alignment: .leading) {
-                    Circle()
-                        .frame(width: 48, height: 48)
-                    
-                    Text("Jack Dorsey")
-                        .font(.headline)
-                    
-                    Text("@jack")
-                        .font(.caption)
-                        .foregroundColor(.gray)
-                    
-                    UserStatsView()
-                        .padding(.vertical, 3)
-                }
-                
-                ForEach(SideMenuViewModel.allCases, id: \.rawValue) { option in
-                    if option == .profile {
-                        NavigationLink {
-                            ProfileView()
-                        } label: {
-                            SideMenuRowView(vm: option)
-                        }
-                    } else if option == .logout {
-                        Button {
-                            print("Log out")
-                        } label: {
-                            SideMenuRowView(vm: option)
-                        }
+        if let user = authViewModel.currentUser {
+            VStack {
+                VStack(alignment: .leading, spacing: 32) {
+                    VStack(alignment: .leading) {
+                        
+                        KFImage(URL(string: user.profileImageUrl))
+                            .resizable()
+                            .scaledToFill()
+                            .clipShape(Circle())
+                            .frame(width: 48, height: 48)
 
-                    } else {
-                        SideMenuRowView(vm: option)
+                        
+                        Text(user.fullname)
+                            .font(.headline)
+                        
+                        Text("@\(user.username)")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                        
+                        UserStatsView()
+                            .padding(.vertical, 3)
                     }
                     
+                    ForEach(SideMenuViewModel.allCases, id: \.rawValue) { option in
+                        if option == .profile {
+                            NavigationLink {
+                                ProfileView(user: user)
+                            } label: {
+                                SideMenuRowView(vm: option)
+                            }
+                        } else if option == .logout {
+                            Button {
+                                authViewModel.signOut()
+                            } label: {
+                                SideMenuRowView(vm: option)
+                            }
+
+                        } else {
+                            SideMenuRowView(vm: option)
+                        }
+                        
 
 
+                    }
+                    
+                    Spacer()
                 }
-                
-                Spacer()
             }
+            .padding()
         }
-        .padding()
     }
 }
 

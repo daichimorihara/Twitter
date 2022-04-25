@@ -9,16 +9,19 @@ import SwiftUI
 
 struct FeedView: View {
     @State private var showNewTweetView = false
-    
+    @ObservedObject var vm = FeedViewModel()
+
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             ScrollView {
-                ForEach(1...20, id: \.self) { _ in
-                    TweetRowView()
-                        .padding(.horizontal)
+                LazyVStack {
+                    ForEach(vm.tweets) { tweet in
+                        TweetRowView(tweet: tweet)
+                            .padding(.horizontal)
+                    }
                 }
             }
-            
+
             Button {
                 self.showNewTweetView.toggle()
             } label: {

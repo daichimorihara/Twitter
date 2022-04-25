@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
+import Kingfisher
+
 
 struct ContentView: View {
     @State private var showMenu = false
     @EnvironmentObject var vm: AuthViewModel
-    
+
     var body: some View {
         NavigationView {
             Group {
@@ -19,21 +21,21 @@ struct ContentView: View {
                 } else {
                     mainInterfaceView
                 }
-                
-                
+
+
             }
         }
     }
 }
 
 extension ContentView {
-    
+
     var mainInterfaceView: some View {
         ZStack(alignment: .topLeading) {
 
             MainTabView()
                 .navigationBarHidden(showMenu)
-            
+
             if showMenu {
                 ZStack {
                     Color(.black)
@@ -46,24 +48,27 @@ extension ContentView {
                     }
                 }
             }
-            
+
             SideMenuView()
                 .frame(width: 250)
                 .offset(x: showMenu ? 0 : -250, y: 0)
                 .background(showMenu ?  Color.white : Color.clear)
-                
+
         }
-        .navigationTitle("Home")
-        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    withAnimation {
-                        self.showMenu.toggle()
+                if let user = vm.currentUser {
+                    Button {
+                        withAnimation {
+                            self.showMenu.toggle()
+                        }
+                    } label: {
+                        KFImage(URL(string: user.profileImageUrl))
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 36, height: 36)
+                            .clipShape(Circle())
                     }
-                } label: {
-                    Circle()
-                        .frame(width: 32, height: 32)
                 }
             }
         }

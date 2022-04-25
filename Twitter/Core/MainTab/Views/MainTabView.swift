@@ -9,47 +9,41 @@ import SwiftUI
 
 struct MainTabView: View {
     @State private var selectedIndex = 0
+    @State private var selectedTab: Tabs = .tag1
+    @EnvironmentObject var vm: AuthViewModel
     
     var body: some View {
-        TabView(selection: $selectedIndex) {
+        TabView(selection: $selectedTab) {
             FeedView()
-                .onTapGesture {
-                    selectedIndex = 0
-                }
                 .tabItem {
                     Image(systemName: "house")
                 }
-                .tag(0)
+                .tag(Tabs.tag1)
             
-            ExploreView()
-                .onTapGesture {
-                    selectedIndex = 1
-                }
-                .tabItem {
-                    Image(systemName: "magnifyingglass")
-                }
-                .tag(1)
+            if let user = vm.currentUser {
+                ExploreView(currentUser: user)
+                    .tabItem {
+                        Image(systemName: "magnifyingglass")
+                    }
+                    .tag(Tabs.tag2)
+            }
+
             
             NotificationsView()
-                .onTapGesture {
-                    selectedIndex = 2
-                }
                 .tabItem {
                     Image(systemName: "bell")
                 }
-                .tag(2)
+                .tag(Tabs.tag3)
             
             MessagesView()
-                .onTapGesture {
-                    selectedIndex = 3
-                }
                 .tabItem {
                     Image(systemName: "envelope")
                 }
-                .tag(3)
-            
-            
+                .tag(Tabs.tag4)
         }
+        .navigationTitle(selectedTab.rawValue)
+        .navigationBarTitleDisplayMode(.inline)
+        
     }
 }
 

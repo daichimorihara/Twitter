@@ -6,11 +6,21 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct ProfileView: View {
     @State private var selectedFilter: TweetFilterViewModel = .tweets
     @Namespace var animation
     @Environment(\.dismiss) var dismiss
+    @ObservedObject var vm: ProfileViewModel
+    
+    private let user: User
+    
+    init(user: User) {
+        self.user = user
+        vm = ProfileViewModel(user: user)
+    }
+    
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -47,8 +57,11 @@ extension ProfileView {
                 }
                 .offset(x: 16, y: 12)
                 
-                Circle()
+                KFImage(URL(string: user.profileImageUrl))
+                    .resizable()
+                    .scaledToFill()
                     .frame(width: 72, height: 72)
+                    .clipShape(Circle())
                     .offset(x: 16, y: 24)
 
             }
@@ -83,7 +96,7 @@ extension ProfileView {
     var userInfoDetails: some View {
         VStack(alignment: .leading) {
             HStack {
-                Text("Jack Dorsey")
+                Text(user.fullname)
                     .font(.title2)
                     .bold()
                 
@@ -91,7 +104,7 @@ extension ProfileView {
                     .foregroundColor(Color(.systemBlue))
             }
             
-            Text("@jack")
+            Text("@\(user.username)")
                 .font(.subheadline)
                 .foregroundColor(.gray)
             
@@ -158,8 +171,8 @@ extension ProfileView {
     var tweetsView: some View {
         ScrollView {
             LazyVStack {
-                ForEach(0...9, id: \.self) { _ in
-                    TweetRowView()
+                ForEach(vm.tweets) { tweet in
+                    TweetRowView(tweet: tweet)
                         .padding(.horizontal)
                 }
             }
@@ -170,6 +183,10 @@ extension ProfileView {
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView()
+        ProfileView(user: User(id: NSUUID().uuidString,
+                               username: "emma",
+                               fullname: "Emma Chamberlain",
+                               profileImageUrl: "",
+                               email: "emma@gmail.com"))
     }
 }

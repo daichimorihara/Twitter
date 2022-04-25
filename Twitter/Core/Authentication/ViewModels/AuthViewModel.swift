@@ -16,14 +16,24 @@ class AuthViewModel: ObservableObject {
     private var tempUserSession: FirebaseAuth.User?
     
     init() {
-        self.userSession = nil
-        //self.userSession = Auth.auth().currentUser
+  //      self.userSession = nil
+        self.userSession = Auth.auth().currentUser
+        fetchUser()
         
-        print("DEBUG: User session is \(self.userSession)")
+        print("DEBUG: User session is \(String(describing: self.userSession))")
     }
     
     func login(withEmail email: String, password: String) {
-        print("DEBUG: Login with email \(email)")
+        Auth.auth().signIn(withEmail: email, password: password) { result, error in
+            if let error = error {
+                print("DEBUG: Failed to sign in with error \(error.localizedDescription)")
+                return
+            }
+            
+            guard let user = result?.user else { return }
+            self.userSession = user
+            self.fetchUser()
+        }
     }
     
     func register(withEmail email: String, password: String, fullname: String, username: String) {
@@ -58,7 +68,7 @@ class AuthViewModel: ObservableObject {
                 .document(uid)
                 .updateData(["profileImageUrl": profileImageUrl]) { _ in
                     self.userSession = self.tempUserSession
-                    self.fetchUser(uid: uid)
+                    self.fetchUser()
                 }
 
                           
@@ -66,9 +76,17 @@ class AuthViewModel: ObservableObject {
         
     }
     
-    func fetchUser(uid: String) {
+    func fetchUser() {
+        guard let uid = self.userSession?.uid else { return }
+        
         UserService().fetchUser(withUid: uid) { user in
             self.currentUser = user
         }
+    }
+    
+    func signOut() {
+        userSession = nil
+        
+        try? Auth.auth().signOut()
     }
 }

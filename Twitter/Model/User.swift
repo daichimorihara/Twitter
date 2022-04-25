@@ -13,9 +13,14 @@ struct User: Identifiable, Codable {
     let username: String
     let fullname: String
     let profileImageUrl: String
+    let email: String
     
     var isCurrentUser: Bool {
         return Auth.auth().currentUser?.uid == id
     }
+    
+//    var userString: String {
+//        "@\(username)"
+//    }
     
 }

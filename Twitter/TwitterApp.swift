@@ -11,12 +11,12 @@ import Firebase
 @main
 struct TwitterApp: App {
     @StateObject var vm = AuthViewModel()
-    
+
     init() {
         FirebaseApp.configure()
     }
-    
-    
+
+
     var body: some Scene {
         WindowGroup {
             ContentView()
