@@ -62,10 +62,15 @@ struct TweetRowView: View {
                     }
                     Spacer()
                     Button {
-                        
+                        if vm.tweet.didLike == true {
+                            vm.unlikeTweet()
+                        } else {
+                            vm.likeTweet()
+                        }
                     } label: {
-                        Image(systemName: "heart")
+                        Image(systemName: vm.tweet.didLike ?? false ? "heart.fill" : "heart")
                             .font(.subheadline)
+                            .foregroundColor(vm.tweet.didLike ?? false ? .red : .gray)
                     }
                     Spacer()
                     Button {
@@ -88,6 +93,10 @@ struct TweetRowView_Previews: PreviewProvider {
         TweetRowView(tweet: Tweet(caption: "Hello",
                                   timestamp: Timestamp(),
                                   uid: "FJIOEIJ",
-                                  likes: 0))
+                                  likes: 0,
+                                  user: User(username: "emma",
+                                             fullname: "Emma Chamberlain",
+                                             profileImageUrl: "",
+                                             email: "emma@gmail.com")))
     }
 }

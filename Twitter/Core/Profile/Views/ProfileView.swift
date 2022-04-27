@@ -81,7 +81,7 @@ extension ProfileView {
             Button {
                 
             } label: {
-                Text("Edit Profile")
+                Text(vm.actionButtonTitle)
                     .font(.subheadline).bold()
                     .frame(width: 120, height: 32)
                     .foregroundColor(.black)
@@ -171,7 +171,7 @@ extension ProfileView {
     var tweetsView: some View {
         ScrollView {
             LazyVStack {
-                ForEach(vm.tweets) { tweet in
+                ForEach(vm.tweets(forFilter: selectedFilter)) { tweet in
                     TweetRowView(tweet: tweet)
                         .padding(.horizontal)
                 }

@@ -17,6 +17,8 @@ class AuthViewModel: ObservableObject {
     
     init() {
   //      self.userSession = nil
+        
+        
         self.userSession = Auth.auth().currentUser
         fetchUser()
         
@@ -47,16 +49,26 @@ class AuthViewModel: ObservableObject {
             guard let user = result?.user else { return }
             self.tempUserSession = user
             
-            let data = ["email": email,
-                        "username": username,
-                        "fullname": fullname,
-                        "uid": user.uid]
+//            let data = ["email": email,
+//                        "username": username,
+//                        "fullname": fullname,
+//                        "uid": user.uid]
+            let data = User(id: user.uid, username: username, fullname: fullname, profileImageUrl: "", email: email)
             
-            Firestore.firestore().collection("users")
-                .document(user.uid)
-                .setData(data) { _ in
-                    self.didAuthenticateUser = true
-                }
+            
+//            Firestore.firestore().collection("users")
+//                .document(user.uid)
+//                .setData(data) { _ in
+//                    self.didAuthenticateUser = true
+//                }
+            let doc = Firestore.firestore().collection("users").document(user.uid)
+                
+            do {
+                try doc.setData(from: data)
+                self.didAuthenticateUser = true
+            } catch {
+                print("Failed to store user data into firestore: \(error.localizedDescription)")
+            }
         }
     }
     

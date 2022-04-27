@@ -16,7 +16,7 @@ struct Tweet: Identifiable, Codable {
     var likes: Int
     
     var user: User?
-    var didLike: Bool? = false
+    var didLike: Bool?
     
     var relativeTime: String {
         let date = timestamp.dateValue()

@@ -21,6 +21,7 @@ struct TwitterApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(vm)
+        //    TestAuthView()
         }
     }
 }
