@@ -51,12 +51,13 @@ struct MessageService {
                         }
                         if let rm = try? change.document.data(as: RecentMessage.self) {
                             recentMessages.insert(rm, at: 0)
+                            completion(recentMessages)
                         }
 
                     }
                 }
             }
-        completion(recentMessages)
+        
     }
     
     func sendMessage(friendId: String, text: String, completion: @escaping() -> Void) {
@@ -104,7 +105,7 @@ struct MessageService {
         completion()
     }
     
-    func persistRecentMessage(friendId: String, text: String) {
+    func persistRecentMessage(friendId: String, text: String, completion: @escaping() -> Void) {
         
         guard let currentUserId = Auth.auth().currentUser?.uid else { return }
         
@@ -152,6 +153,7 @@ struct MessageService {
                 print(error.localizedDescription)
             }
         }
+        completion()
     }
     
     

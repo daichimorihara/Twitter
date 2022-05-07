@@ -16,53 +16,58 @@ struct MessagesView: View {
     
     
     var body: some View {
-        ZStack(alignment: .bottomTrailing) {
-            VStack {
+        if let currentUser = authViewModel.currentUser {
+            ZStack(alignment: .bottomTrailing) {
                 NavigationLink("", isActive: $isShowingChatLogView) {
                     ChatLogView(friend: friend)
                 }
-                // search bar
                 
-                chatWithFriend
-                
+                ScrollView {
+                    LazyVStack {
+                        chatWithFriend
+                    }
+                }
+                newMessageButton
             }
-            Button {
-                self.isShowingNewMessageView.toggle()
-            } label: {
-                Image(systemName: "envelope.badge")
-                    .padding()
-                    .background(Color(.systemBlue))
-                    .foregroundColor(.white)
-                    .clipShape(Circle())
-                    .padding()
+            .fullScreenCover(isPresented: $isShowingNewMessageView) {
+                NewMessageView(currentUser: currentUser, didSelectNewUser: { user in
+                    self.friend = user
+                    isShowingChatLogView.toggle()
+                    
+                })
             }
-
         }
-        .fullScreenCover(isPresented: $isShowingNewMessageView) {
-            NewMessageView(didSelectNewUser: { user in
-                self.friend = user
-                isShowingChatLogView.toggle()
-            })
-        }
-
     }
 }
 
 extension MessagesView {
     var chatWithFriend: some View {
-        ScrollView {
-            ForEach(vm.recentMessages) { rm in
-                UserChatBoxView(recentMessage: rm)
-                    .onTapGesture {
-                        self.friend = User(id: rm.id,
-                                           username: rm.username,
-                                           fullname: rm.fullname,
-                                           profileImageUrl: rm.profileImageUrl,
-                                           email: rm.email)
-                        
-                        self.isShowingChatLogView.toggle()
-                    }
-            }
+        
+        ForEach(vm.recentMessages) { rm in
+            UserChatBoxView(recentMessage: rm)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    self.friend = User(id: rm.id,
+                                       username: rm.username,
+                                       fullname: rm.fullname,
+                                       profileImageUrl: rm.profileImageUrl,
+                                       email: rm.email)
+                    
+                    self.isShowingChatLogView.toggle()
+                }
+        }
+    }
+    
+    var newMessageButton: some View {
+        Button {
+            self.isShowingNewMessageView.toggle()
+        } label: {
+            Image(systemName: "envelope.badge")
+                .padding()
+                .background(Color(.systemBlue))
+                .foregroundColor(.white)
+                .clipShape(Circle())
+                .padding()
         }
     }
     

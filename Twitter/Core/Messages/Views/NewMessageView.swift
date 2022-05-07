@@ -8,19 +8,25 @@ import Kingfisher
 import SwiftUI
 
 struct NewMessageView: View {
-    @ObservedObject var vm = NewMessageViewModel()
+    @ObservedObject var vm: NewMessageViewModel
     @Environment(\.dismiss) var dismiss
     
     let didSelectNewUser: (User) -> Void
     
+    init(currentUser: User, didSelectNewUser: @escaping (User) -> Void) {
+        self.vm = NewMessageViewModel(currentUser: currentUser)
+        self.didSelectNewUser = didSelectNewUser
+    }
+    
     var body: some View {
         NavigationView {
             ScrollView {
-                ForEach(vm.users) { user in
+                ForEach(vm.availableUsers) { user in
                     selectButton(user)
                 }
             }
             .navigationTitle("New message")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {

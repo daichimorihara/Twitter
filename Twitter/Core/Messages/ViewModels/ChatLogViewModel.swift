@@ -34,7 +34,10 @@ class ChatLogViewModel: ObservableObject {
         guard let friendId = friend?.id else { return }
         
         MessageService().sendMessage(friendId: friendId, text: text) {
-            MessageService().persistRecentMessage(friendId: friendId, text: self.text)
+            MessageService().persistRecentMessage(friendId: friendId, text: self.text) {
+                self.text = ""
+            }
+            
         }
     }
 }
